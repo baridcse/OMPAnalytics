@@ -32,6 +32,7 @@ Example output:
 count:  6
 mean:   18.0000
 median: 15.5000
+stdev:  12.3153
 min:    4.0000
 max:    42.0000
 ```

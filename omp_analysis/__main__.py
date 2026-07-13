@@ -44,6 +44,7 @@ def main(argv: List[str] | None = None) -> int:
     print(f"count:  {int(stats['count'])}")
     print(f"mean:   {stats['mean']:.4f}")
     print(f"median: {stats['median']:.4f}")
+    print(f"stdev:  {stats['stdev']:.4f}")
     print(f"min:    {stats['min']:.4f}")
     print(f"max:    {stats['max']:.4f}")
     return 0

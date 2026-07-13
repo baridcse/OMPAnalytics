@@ -1,6 +1,6 @@
 import unittest
 
-from omp_analysis.stats import mean, median, summarize
+from omp_analysis.stats import mean, median, stdev, summarize
 
 
 class TestMean(unittest.TestCase):
@@ -27,12 +27,26 @@ class TestMedian(unittest.TestCase):
             median([])
 
 
+class TestStdev(unittest.TestCase):
+    def test_basic(self):
+        # population stdev of [2, 4, 6] -> sqrt(8/3)
+        self.assertAlmostEqual(stdev([2, 4, 6]), 1.632993, places=6)
+
+    def test_identical_values(self):
+        self.assertEqual(stdev([5, 5, 5]), 0)
+
+    def test_empty_raises(self):
+        with self.assertRaises(ValueError):
+            stdev([])
+
+
 class TestSummarize(unittest.TestCase):
     def test_fields(self):
         stats = summarize([4, 8, 15, 16, 23, 42])
         self.assertEqual(stats["count"], 6)
         self.assertEqual(stats["mean"], 18)
         self.assertEqual(stats["median"], 15.5)
+        self.assertAlmostEqual(stats["stdev"], 12.315302, places=6)
         self.assertEqual(stats["min"], 4)
         self.assertEqual(stats["max"], 42)
 
