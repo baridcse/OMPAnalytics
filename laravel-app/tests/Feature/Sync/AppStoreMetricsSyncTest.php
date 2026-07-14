@@ -51,6 +51,27 @@ beforeEach(function () {
             return Http::response(gzencode($tsv), 200, ['Content-Type' => 'application/a-gzip']);
         }
 
+        // Analytics reports: newly-created ONGOING request, nothing
+        // generated yet (the 24-48h pending window) -> zeros/null.
+        if (str_contains($url, '/v1/apps/1500000001/analyticsReportRequests')) {
+            return Http::response(json_encode(['data' => []]), 200);
+        }
+        if (str_contains($url, '/v1/analyticsReportRequests/req-new/reports')) {
+            return Http::response(json_encode(['data' => []]), 200);
+        }
+        if (str_contains($url, '/v1/analyticsReportRequests/req-new')) {
+            return Http::response(json_encode(['data' => [
+                'type' => 'analyticsReportRequests', 'id' => 'req-new',
+                'attributes' => ['accessType' => 'ONGOING', 'stoppedDueToInactivity' => false],
+            ]]), 200);
+        }
+        if (str_contains($url, '/v1/analyticsReportRequests') && $request->method() === 'POST') {
+            return Http::response(json_encode(['data' => [
+                'type' => 'analyticsReportRequests', 'id' => 'req-new',
+                'attributes' => ['accessType' => 'ONGOING', 'stoppedDueToInactivity' => false],
+            ]]), 201);
+        }
+
         return Http::response('unexpected request: '.$url, 500);
     });
 });
@@ -64,6 +85,11 @@ it('upserts daily installs from the sales TSV with a rating snapshot on the late
     // Apple returns 406 NOT_ACCEPTABLE without this header (live-verified).
     Http::assertSent(fn (Request $request) => str_contains($request->url(), '/v1/salesReports')
         && ($request->header('Accept')[0] ?? '') === 'application/a-gzip');
+
+    // A fresh ONGOING analytics request was created and its id cached.
+    Http::assertSent(fn (Request $request) => $request->method() === 'POST'
+        && str_contains($request->url(), '/v1/analyticsReportRequests'));
+    expect($this->integration->refresh()->sync_cursor['analytics']['request_id'])->toBe('req-new');
 
     $salesDay = AppPerformanceDaily::whereDate('date', $this->dayWithSales)->firstOrFail();
     // 1F (25) + 1T (5) count; 7F update rows and other apps' rows do not.

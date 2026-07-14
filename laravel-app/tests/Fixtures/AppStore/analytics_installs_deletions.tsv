@@ -1,0 +1,5 @@
+Date	App Name	App Apple Identifier	Event	Download Type	App Version	Device	Platform Version	Source Type	Page Type	App Download Date	Territory	Counts	Unique Devices
+{{DATE1}}	Sleep Sounds	1500000001	Delete	First-time download	3.0.0	iPhone	18.5	App Store search	product_page	2026-01-15	US	120	118
+{{DATE1}}	Sleep Sounds	1500000001	Delete	Redownload	3.0.0	iPad	18.5	App referrer	product_page	2026-02-20	GB	80	77
+{{DATE1}}	Sleep Sounds	1500000001	Install	First-time download	3.0.0	iPhone	18.5	App Store search	product_page	2026-01-15	US	500	495
+{{DATE2}}	Sleep Sounds	1500000001	Delete	First-time download	3.0.0	iPhone	18.5	App Store search	product_page	2026-01-15	US	150	149

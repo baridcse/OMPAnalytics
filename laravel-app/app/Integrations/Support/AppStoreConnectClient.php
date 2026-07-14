@@ -4,6 +4,7 @@ namespace App\Integrations\Support;
 
 use App\Models\Integration;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -27,6 +28,27 @@ class AppStoreConnectClient
      */
     public function get(Integration $integration, string $pathOrUrl, ?array $query = null, array $headers = []): Response
     {
+        return $this->pending($integration, $headers)->get($pathOrUrl, $query);
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload  JSON:API document
+     */
+    public function post(Integration $integration, string $path, array $payload): Response
+    {
+        return $this->pending($integration)->post($path, $payload);
+    }
+
+    public function delete(Integration $integration, string $path): Response
+    {
+        return $this->pending($integration)->delete($path);
+    }
+
+    /**
+     * @param  array<string, string>  $headers
+     */
+    private function pending(Integration $integration, array $headers = []): PendingRequest
+    {
         return Http::withToken($this->tokens->tokenFor($integration))
             ->withHeaders($headers)
             ->baseUrl(config('integrations.providers.app_store.base_url'))
@@ -35,8 +57,7 @@ class AppStoreConnectClient
                 fn (int $attempt, $exception) => $this->retryDelayMs($exception),
                 fn ($exception) => $this->shouldRetry($exception),
                 throw: false,
-            )
-            ->get($pathOrUrl, $query);
+            );
     }
 
     private function shouldRetry($exception): bool
