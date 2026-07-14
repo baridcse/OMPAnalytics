@@ -1,7 +1,19 @@
+# Python
 __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
 venv/
 .pytest_cache/
+
+# macOS
 .DS_Store
+
+# Laravel app (laravel-app/ has its own .gitignore; these are safety nets)
+laravel-app/vendor/
+laravel-app/node_modules/
+laravel-app/.env
+laravel-app/public/build/
+laravel-app/storage/*.key
+laravel-app/database/*.sqlite
+laravel-app/database/*.sqlite-journal
