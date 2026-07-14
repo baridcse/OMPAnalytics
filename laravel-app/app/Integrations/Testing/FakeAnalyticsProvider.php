@@ -12,9 +12,9 @@ class FakeAnalyticsProvider implements AnalyticsProvider
     public function fetchAnalytics(Integration $integration, DateRange $range): iterable
     {
         $seed = $integration->store_listing_id ?? 1;
+        $i = 0;
 
-        for ($day = $range->start->copy(); $day->lte($range->end); $day->addDay()) {
-            $i = $day->diffInDays($range->start);
+        for ($day = $range->start->copy(); $day->lte($range->end); $day->addDay(), $i++) {
             $sessions = 5000 + (($seed + $i) * 419) % 30000;
 
             yield new AnalyticsRow(

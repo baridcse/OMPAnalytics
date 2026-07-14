@@ -17,9 +17,9 @@ class FakeMetricsProvider implements MetricsProvider
     public function fetchAppPerformance(Integration $integration, DateRange $range): iterable
     {
         $seed = $integration->store_listing_id ?? 1;
+        $i = 0;
 
-        for ($day = $range->start->copy(); $day->lte($range->end); $day->addDay()) {
-            $i = $day->diffInDays($range->start);
+        for ($day = $range->start->copy(); $day->lte($range->end); $day->addDay(), $i++) {
             $base = 1000 + ($seed * 997) % 20000;
 
             yield new AppPerformanceRow(

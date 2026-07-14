@@ -12,9 +12,9 @@ class FakeAdRevenueProvider implements AdRevenueProvider
     public function fetchAdRevenue(Integration $integration, DateRange $range): iterable
     {
         $seed = $integration->store_listing_id ?? 1;
+        $i = 0;
 
-        for ($day = $range->start->copy(); $day->lte($range->end); $day->addDay()) {
-            $i = $day->diffInDays($range->start);
+        for ($day = $range->start->copy(); $day->lte($range->end); $day->addDay(), $i++) {
             $impressions = 50000 + (($seed + $i) * 641) % 100000;
             $ecpm = round(1.0 + (($seed + $i) % 8) / 4, 4);
 

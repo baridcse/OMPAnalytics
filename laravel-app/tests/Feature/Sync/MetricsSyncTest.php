@@ -27,6 +27,9 @@ it('upserts one performance row per day in the window, idempotently', function (
     $job->handle($this->factory);
     expect(AppPerformanceDaily::count())->toBe(10);
 
+    // Regression: Carbon 3 signed diffs once produced negative metrics.
+    expect(AppPerformanceDaily::where('installs', '<', 0)->orWhere('active_users', '<', 0)->count())->toBe(0);
+
     $before = AppPerformanceDaily::orderBy('date')->pluck('active_users')->all();
 
     $job->handle($this->factory);
