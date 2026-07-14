@@ -14,16 +14,14 @@ class SyncRun extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'capability' => Capability::class,
-            'status' => SyncStatus::class,
-            'started_at' => 'datetime',
-            'finished_at' => 'datetime',
-            'meta' => 'array',
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'capability' => Capability::class,
+        'status' => SyncStatus::class,
+        'started_at' => 'datetime',
+        'finished_at' => 'datetime',
+        'meta' => 'array',
+    ];
 
     public function integration(): BelongsTo
     {

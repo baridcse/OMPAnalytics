@@ -15,26 +15,27 @@ class ReviewAlert extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'reason' => AlertReason::class,
-            'status' => AlertStatus::class,
-            'notified_at' => 'datetime',
-            'notified_channels' => 'array',
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'reason' => AlertReason::class,
+        'status' => AlertStatus::class,
+        'notified_at' => 'datetime',
+        'notified_channels' => 'array',
+    ];
 
+    /** @return BelongsTo<Review, $this> */
     public function review(): BelongsTo
     {
         return $this->belongsTo(Review::class);
     }
 
+    /** @return BelongsTo<StoreListing, $this> */
     public function storeListing(): BelongsTo
     {
         return $this->belongsTo(StoreListing::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function assignee(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');

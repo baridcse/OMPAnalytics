@@ -15,6 +15,7 @@ use App\Models\Review;
 use App\Models\ReviewAlert;
 use App\Models\StoreListing;
 use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
@@ -25,6 +26,8 @@ use Illuminate\Support\Str;
  */
 class DemoDataSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
     private const DAYS = 90;
 
     public function run(): void
@@ -55,10 +58,12 @@ class DemoDataSeeder extends Seeder
         ];
 
         foreach ($users as $data) {
-            User::firstOrCreate(
+            $user = User::firstOrCreate(
                 ['email' => $data['email']],
                 ['name' => $data['name'], 'password' => 'password'],
-            )->syncRoles([$data['role']]);
+            );
+            $user->forceFill(['email_verified_at' => $user->email_verified_at ?? now()])->save();
+            $user->syncRoles([$data['role']]);
         }
     }
 

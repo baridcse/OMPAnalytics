@@ -25,7 +25,9 @@ abstract class BaseMetricsService
      * Re-key a by-date collection into a dense, zero-filled day series so
      * charts have one point per day.
      *
-     * @param  Collection<string, object>  $rows  keyed by Y-m-d
+     * @template TRow of object
+     *
+     * @param  Collection<string, TRow>  $rows  keyed by Y-m-d
      * @param  list<string>  $fields
      * @return array{categories: list<string>, series: array<string, list<float|int>>}
      */

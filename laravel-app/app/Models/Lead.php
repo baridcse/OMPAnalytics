@@ -12,14 +12,12 @@ class Lead extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'value' => 'float',
-            'received_at' => 'datetime',
-            'raw' => 'array',
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'value' => 'float',
+        'received_at' => 'datetime',
+        'raw' => 'array',
+    ];
 
     public function app(): BelongsTo
     {

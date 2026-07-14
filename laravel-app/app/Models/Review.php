@@ -15,26 +15,26 @@ class Review extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'rating' => 'integer',
-            'review_created_at' => 'datetime',
-            'review_updated_at' => 'datetime',
-            'reply_at' => 'datetime',
-            'sentiment_score' => 'float',
-            'sentiment_label' => SentimentLabel::class,
-            'sentiment_magnitude' => 'float',
-            'analyzed_at' => 'datetime',
-            'raw' => 'array',
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'rating' => 'integer',
+        'review_created_at' => 'datetime',
+        'review_updated_at' => 'datetime',
+        'reply_at' => 'datetime',
+        'sentiment_score' => 'float',
+        'sentiment_label' => SentimentLabel::class,
+        'sentiment_magnitude' => 'float',
+        'analyzed_at' => 'datetime',
+        'raw' => 'array',
+    ];
 
+    /** @return BelongsTo<StoreListing, $this> */
     public function storeListing(): BelongsTo
     {
         return $this->belongsTo(StoreListing::class);
     }
 
+    /** @return HasOne<ReviewAlert, $this> */
     public function alert(): HasOne
     {
         return $this->hasOne(ReviewAlert::class);

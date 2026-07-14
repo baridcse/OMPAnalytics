@@ -14,15 +14,13 @@ class AppPerformanceDaily extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'date' => 'date',
-            'crash_rate' => 'float',
-            'anr_rate' => 'float',
-            'rating_avg' => 'float',
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'date' => 'date',
+        'crash_rate' => 'float',
+        'anr_rate' => 'float',
+        'rating_avg' => 'float',
+    ];
 
     public function storeListing(): BelongsTo
     {

@@ -38,10 +38,18 @@
                             @endif
                         </td>
                         <td class="px-5 py-3 text-right">
-                            <button wire:click="toggleEnabled({{ $integration->id }})"
-                                    class="rounded-lg border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
-                                {{ $integration->is_enabled ? 'Disable' : 'Enable' }}
-                            </button>
+                            <div class="inline-flex gap-2">
+                                @if ($integration->is_enabled)
+                                    <button wire:click="syncNow({{ $integration->id }})"
+                                            class="rounded-lg bg-indigo-600 px-3 py-1 text-xs font-medium text-white hover:bg-indigo-500">
+                                        Sync now
+                                    </button>
+                                @endif
+                                <button wire:click="toggleEnabled({{ $integration->id }})"
+                                        class="rounded-lg border border-gray-300 px-3 py-1 text-xs font-medium text-gray-700 hover:bg-gray-50">
+                                    {{ $integration->is_enabled ? 'Disable' : 'Enable' }}
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 @empty

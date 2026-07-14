@@ -14,13 +14,11 @@ class AnalyticsDaily extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'date' => 'date',
-            'avg_engagement_time' => 'float',
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'date' => 'date',
+        'avg_engagement_time' => 'float',
+    ];
 
     public function storeListing(): BelongsTo
     {

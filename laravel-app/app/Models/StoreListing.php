@@ -14,14 +14,13 @@ class StoreListing extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'platform' => Platform::class,
-            'meta' => 'array',
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'platform' => Platform::class,
+        'meta' => 'array',
+    ];
 
+    /** @return BelongsTo<App, $this> */
     public function app(): BelongsTo
     {
         return $this->belongsTo(App::class);

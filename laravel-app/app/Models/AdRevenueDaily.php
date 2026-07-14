@@ -14,15 +14,13 @@ class AdRevenueDaily extends Model
 
     protected $guarded = [];
 
-    protected function casts(): array
-    {
-        return [
-            'date' => 'date',
-            'ctr' => 'float',
-            'ecpm' => 'float',
-            'estimated_revenue' => 'float',
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'date' => 'date',
+        'ctr' => 'float',
+        'ecpm' => 'float',
+        'estimated_revenue' => 'float',
+    ];
 
     public function storeListing(): BelongsTo
     {

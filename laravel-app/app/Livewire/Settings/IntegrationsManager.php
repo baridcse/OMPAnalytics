@@ -4,6 +4,7 @@ namespace App\Livewire\Settings;
 
 use App\Models\Integration;
 use App\Models\SyncRun;
+use Illuminate\Support\Facades\Artisan;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -16,6 +17,13 @@ class IntegrationsManager extends Component
     {
         $integration = Integration::findOrFail($integrationId);
         $integration->update(['is_enabled' => ! $integration->is_enabled]);
+    }
+
+    public function syncNow(int $integrationId): void
+    {
+        Artisan::call('integrations:sync', ['--integration' => $integrationId]);
+
+        $this->dispatch('sync-queued');
     }
 
     public function render()

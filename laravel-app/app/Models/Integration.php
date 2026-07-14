@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Env;
 
 class Integration extends Model
 {
@@ -16,23 +17,23 @@ class Integration extends Model
 
     protected $hidden = ['credentials'];
 
-    protected function casts(): array
-    {
-        return [
-            'is_enabled' => 'boolean',
-            'credentials' => 'encrypted:array',
-            'config' => 'array',
-            'sync_cursor' => 'array',
-            'last_synced_at' => 'datetime',
-            'last_sync_status' => SyncStatus::class,
-        ];
-    }
+    /** @var array<string, string> */
+    protected $casts = [
+        'is_enabled' => 'boolean',
+        'credentials' => 'encrypted:array',
+        'config' => 'array',
+        'sync_cursor' => 'array',
+        'last_synced_at' => 'datetime',
+        'last_sync_status' => SyncStatus::class,
+    ];
 
+    /** @return BelongsTo<StoreListing, $this> */
     public function storeListing(): BelongsTo
     {
         return $this->belongsTo(StoreListing::class);
     }
 
+    /** @return HasMany<SyncRun, $this> */
     public function syncRuns(): HasMany
     {
         return $this->hasMany(SyncRun::class);
@@ -40,14 +41,16 @@ class Integration extends Model
 
     /**
      * Resolve a credential value, following {"ref":"env","key":"..."} indirection
-     * so raw secrets can live only in .env.
+     * so raw secrets never live in the database. In production the referenced
+     * keys must be real OS-level environment variables (config caching skips
+     * .env parsing).
      */
     public function credential(string $key): ?string
     {
         $value = $this->credentials[$key] ?? null;
 
         if (is_array($value) && ($value['ref'] ?? null) === 'env') {
-            return env($value['key']);
+            return Env::get($value['key']);
         }
 
         return $value;
