@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\Capability;
+use App\Integrations\AppStore\AppStoreMetricsProvider;
+use App\Integrations\AppStore\AppStoreReviewsProvider;
 use App\Integrations\Testing\FakeAdRevenueProvider;
 use App\Integrations\Testing\FakeAnalyticsProvider;
 use App\Integrations\Testing\FakeLeadsProvider;
@@ -32,12 +34,30 @@ return [
                 Capability::Analytics->value => FakeAnalyticsProvider::class,
                 Capability::Leads->value => FakeLeadsProvider::class,
             ],
+            'credential_fields' => [],
         ],
 
-        // 'google_play' => [...Phase 3...]
+        'app_store' => [
+            'label' => 'App Store Connect',
+            'base_url' => 'https://api.appstoreconnect.apple.com',
+            'lookup_country' => env('APP_STORE_LOOKUP_COUNTRY', 'us'),
+            'capabilities' => [
+                Capability::Metrics->value => AppStoreMetricsProvider::class,
+                Capability::Reviews->value => AppStoreReviewsProvider::class,
+            ],
+            // Drives the write-only credential inputs on the add-integration
+            // form. Key requires Admin, or App Manager + Sales and Reports.
+            'credential_fields' => [
+                'issuer_id' => 'Issuer ID',
+                'key_id' => 'Key ID',
+                'private_key' => 'Private key (.p8 contents, plain or base64)',
+                'vendor_number' => 'Vendor number (Sales & Trends)',
+            ],
+        ],
+
+        // 'google_play' => [...Phase 4...]
         // 'admob'       => [...Phase 5...]
         // 'ga4'         => [...Phase 5...]
-        // 'app_store'   => [...Phase 6...]
     ],
 
     /*

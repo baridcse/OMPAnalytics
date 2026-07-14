@@ -1,0 +1,5 @@
+Provider	Provider Country	SKU	Developer	Title	Version	Product Type Identifier	Units	Developer Proceeds	Begin Date	End Date	Customer Currency	Country Code	Currency of Proceeds	Apple Identifier	Customer Price	Promo Code	Parent Identifier	Subscription	Period	Category
+APPLE	US	com.demo.sleepsounds	Demo Studio	Sleep Sounds	3.0.0	1F	25	0	{{REPORT_DATE}}	{{REPORT_DATE}}	USD	US	USD	1500000001	0			 	 	Lifestyle
+APPLE	US	com.demo.sleepsounds	Demo Studio	Sleep Sounds	3.0.0	7F	100	0	{{REPORT_DATE}}	{{REPORT_DATE}}	USD	US	USD	1500000001	0			 	 	Lifestyle
+APPLE	US	com.other.app	Other Dev	Other App	1.0.0	1F	50	0	{{REPORT_DATE}}	{{REPORT_DATE}}	USD	GB	USD	9999999999	0			 	 	Games
+APPLE	US	com.demo.sleepsounds	Demo Studio	Sleep Sounds	3.0.0	1T	5	0	{{REPORT_DATE}}	{{REPORT_DATE}}	USD	DE	USD	1500000001	0			 	 	Lifestyle

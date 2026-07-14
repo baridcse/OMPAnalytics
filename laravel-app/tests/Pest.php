@@ -44,7 +44,34 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Throwaway EC P-256 key pair for App Store Connect JWT tests — no real
+ * Apple credentials are ever used in the suite.
+ *
+ * @return array{0: string, 1: string} [privatePem, publicPem]
+ */
+function makeAscTestKeyPair(): array
 {
-    // ..
+    $resource = openssl_pkey_new([
+        'private_key_type' => OPENSSL_KEYTYPE_EC,
+        'curve_name' => 'prime256v1',
+    ]);
+
+    openssl_pkey_export($resource, $privatePem);
+    $publicPem = openssl_pkey_get_details($resource)['key'];
+
+    return [$privatePem, $publicPem];
+}
+
+/**
+ * Load a JSON/TSV fixture, substituting {{PLACEHOLDER}} tokens so date
+ * fields stay relative to the test run instead of going stale.
+ *
+ * @param  array<string, string>  $replacements
+ */
+function appStoreFixture(string $name, array $replacements = []): string
+{
+    $contents = file_get_contents(base_path("tests/Fixtures/AppStore/{$name}"));
+
+    return strtr($contents, $replacements);
 }

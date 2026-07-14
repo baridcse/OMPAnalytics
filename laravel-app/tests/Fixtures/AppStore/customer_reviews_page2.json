@@ -1,0 +1,37 @@
+{
+    "data": [
+        {
+            "type": "customerReviews",
+            "id": "asc-review-0003",
+            "attributes": {
+                "rating": 3,
+                "title": "Okay",
+                "body": "Decent app. Does the job, nothing special.",
+                "reviewerNickname": "NeutralUser",
+                "createdDate": "{{DATE_THIRD}}",
+                "territory": "DEU"
+            }
+        },
+        {
+            "type": "customerReviews",
+            "id": "asc-review-0004",
+            "attributes": {
+                "rating": 4,
+                "title": "Nice",
+                "body": "Great overall, really useful and easy to use.",
+                "reviewerNickname": null,
+                "createdDate": "{{DATE_OLDEST}}",
+                "territory": "USA"
+            }
+        }
+    ],
+    "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/apps/1500000001/customerReviews?cursor=NEXTPAGE&limit=200&sort=-createdDate"
+    },
+    "meta": {
+        "paging": {
+            "total": 4,
+            "limit": 200
+        }
+    }
+}
