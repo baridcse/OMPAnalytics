@@ -71,7 +71,7 @@ class AppStoreMetricsProvider implements MetricsProvider
             'filter[vendorNumber]' => $vendorNumber,
             'filter[reportDate]' => $day->toDateString(),
             'filter[version]' => '1_1',
-        ]);
+        ], headers: ['Accept' => 'application/a-gzip']);
 
         // Apple returns 404 for days with zero transactions — a real zero.
         if ($response->status() === 404) {

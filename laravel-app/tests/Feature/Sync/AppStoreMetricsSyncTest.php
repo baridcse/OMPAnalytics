@@ -61,6 +61,10 @@ it('upserts daily installs from the sales TSV with a rating snapshot on the late
     // Only days up to yesterday are requested.
     expect(AppPerformanceDaily::count())->toBe(2);
 
+    // Apple returns 406 NOT_ACCEPTABLE without this header (live-verified).
+    Http::assertSent(fn (Request $request) => str_contains($request->url(), '/v1/salesReports')
+        && ($request->header('Accept')[0] ?? '') === 'application/a-gzip');
+
     $salesDay = AppPerformanceDaily::whereDate('date', $this->dayWithSales)->firstOrFail();
     // 1F (25) + 1T (5) count; 7F update rows and other apps' rows do not.
     expect($salesDay->installs)->toBe(30)

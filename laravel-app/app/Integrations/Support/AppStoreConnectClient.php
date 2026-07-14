@@ -20,12 +20,15 @@ class AppStoreConnectClient
     /**
      * Pass $query = null when the URL already carries its own query string
      * (e.g. an ASC links.next pagination URL) — an array here would replace it.
+     * Report endpoints require Accept: application/a-gzip or Apple returns 406.
      *
      * @param  array<string, mixed>|null  $query
+     * @param  array<string, string>  $headers
      */
-    public function get(Integration $integration, string $pathOrUrl, ?array $query = null): Response
+    public function get(Integration $integration, string $pathOrUrl, ?array $query = null, array $headers = []): Response
     {
         return Http::withToken($this->tokens->tokenFor($integration))
+            ->withHeaders($headers)
             ->baseUrl(config('integrations.providers.app_store.base_url'))
             ->retry(
                 3,
