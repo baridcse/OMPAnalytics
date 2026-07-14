@@ -13,12 +13,12 @@ use RuntimeException;
 
 /**
  * Daily install counts from App Store Connect Sales & Trends reports
- * (gzipped TSV, one request per day) plus a current average-rating snapshot
- * from the public iTunes lookup endpoint (attached to the latest day only).
+ * (gzipped TSV, one request per day), a current average-rating snapshot
+ * from the public iTunes lookup endpoint (latest day only), and — via the
+ * Analytics Reports API — active devices, uninstalls (deletions), and
+ * crash rate (crashes / sessions, both from the opted-in population).
  *
- * Not available from Apple in this phase: uninstalls (never exposed),
- * active users and crash rate (async Analytics Reports API — Phase 3b).
- * ANR rate is Android-only.
+ * ANR rate is Android-only and stays null for iOS listings.
  */
 class AppStoreMetricsProvider implements MetricsProvider
 {
@@ -27,7 +27,10 @@ class AppStoreMetricsProvider implements MetricsProvider
      */
     private const INSTALL_TYPES = ['1', '1F', '1T', 'F1', '1E', '1EP', '1EU'];
 
-    public function __construct(private readonly AppStoreConnectClient $client) {}
+    public function __construct(
+        private readonly AppStoreConnectClient $client,
+        private readonly AnalyticsReportsFetcher $analytics,
+    ) {}
 
     /**
      * @return iterable<AppPerformanceRow>
@@ -47,15 +50,21 @@ class AppStoreMetricsProvider implements MetricsProvider
         // Daily reports appear the following day (~8am PT); never ask for today.
         $end = $range->end->copy()->min(Carbon::yesterday());
         $rating = $this->ratingSnapshot($listing->store_app_id);
+        $usage = $this->analytics->dailyMetrics($integration, $range);
 
         for ($day = $range->start->copy(); $day->lte($end); $day->addDay()) {
+            $date = $day->toDateString();
             $isLatestDay = $day->isSameDay($end);
 
+            $sessions = $usage['sessions'][$date] ?? 0;
+            $crashes = $usage['crashes'][$date] ?? null;
+
             yield new AppPerformanceRow(
-                date: $day->toDateString(),
-                activeUsers: 0,
+                date: $date,
+                activeUsers: $usage['active_users'][$date] ?? 0,
                 installs: $this->installsFor($integration, $vendorNumber, $listing->store_app_id, $day),
-                uninstalls: 0,
+                uninstalls: $usage['deletions'][$date] ?? 0,
+                crashRate: ($crashes !== null && $sessions > 0) ? round($crashes / $sessions, 5) : null,
                 ratingAvg: $isLatestDay ? $rating['avg'] : null,
                 ratingCount: $isLatestDay ? $rating['count'] : 0,
             );
