@@ -1,0 +1,38 @@
+{
+    "data": [
+        {
+            "type": "customerReviews",
+            "id": "asc-review-0001",
+            "attributes": {
+                "rating": 5,
+                "title": "Fantastic",
+                "body": "Fantastic app, works perfectly and looks beautiful.",
+                "reviewerNickname": "HappyUser",
+                "createdDate": "{{DATE_NEWEST}}",
+                "territory": "USA"
+            }
+        },
+        {
+            "type": "customerReviews",
+            "id": "asc-review-0002",
+            "attributes": {
+                "rating": 1,
+                "title": "Crashes",
+                "body": "Terrible update, it crashes constantly. Total waste of time.",
+                "reviewerNickname": "AngryUser",
+                "createdDate": "{{DATE_SECOND}}",
+                "territory": "GBR"
+            }
+        }
+    ],
+    "links": {
+        "self": "https://api.appstoreconnect.apple.com/v1/apps/1500000001/customerReviews?limit=200&sort=-createdDate",
+        "next": "https://api.appstoreconnect.apple.com/v1/apps/1500000001/customerReviews?cursor=NEXTPAGE&limit=200&sort=-createdDate"
+    },
+    "meta": {
+        "paging": {
+            "total": 4,
+            "limit": 200
+        }
+    }
+}

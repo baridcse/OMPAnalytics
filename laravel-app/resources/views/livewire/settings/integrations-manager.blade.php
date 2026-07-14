@@ -1,11 +1,80 @@
 <div>
-    <div class="mb-6">
-        <h1 class="text-xl font-semibold text-gray-900">Integrations</h1>
-        <p class="mt-0.5 text-sm text-gray-500">
-            Data sources feeding the dashboards. Live providers (Google Play, App Store,
-            AdMob, GA4) are wired one at a time — credentials stay in your <code>.env</code>.
-        </p>
+    <div class="mb-6 flex flex-wrap items-start justify-between gap-4">
+        <div>
+            <h1 class="text-xl font-semibold text-gray-900">Integrations</h1>
+            <p class="mt-0.5 text-sm text-gray-500">
+                Data sources feeding the dashboards. Credentials are stored encrypted and
+                never displayed again; use <code>env:KEY_NAME</code> to reference a value
+                from your <code>.env</code> instead.
+            </p>
+        </div>
+        <button wire:click="$toggle('showCreateForm')"
+                class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">
+            {{ $showCreateForm ? 'Close' : 'Add integration' }}
+        </button>
     </div>
+
+    @if ($showCreateForm)
+        <form wire:submit="createIntegration" class="mb-6 rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+            <h2 class="text-sm font-semibold text-gray-700">New integration</h2>
+
+            <div class="mt-4 grid gap-4 md:grid-cols-3">
+                <div>
+                    <label class="text-xs font-medium uppercase tracking-wide text-gray-500">Provider</label>
+                    <select wire:model.live="newProvider" class="mt-1 w-full rounded-lg border-gray-300 text-sm shadow-sm">
+                        <option value="">Select provider…</option>
+                        @foreach ($providers as $key => $provider)
+                            <option value="{{ $key }}">{{ $provider['label'] }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('newProvider')" class="mt-1" />
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium uppercase tracking-wide text-gray-500">Name</label>
+                    <input type="text" wire:model="newName" placeholder="e.g. Sleep Sounds — App Store"
+                           class="mt-1 w-full rounded-lg border-gray-300 text-sm shadow-sm">
+                    <x-input-error :messages="$errors->get('newName')" class="mt-1" />
+                </div>
+
+                <div>
+                    <label class="text-xs font-medium uppercase tracking-wide text-gray-500">Store listing</label>
+                    <select wire:model="newStoreListingId" class="mt-1 w-full rounded-lg border-gray-300 text-sm shadow-sm">
+                        <option value="">Select app listing…</option>
+                        @foreach ($listings as $listing)
+                            <option value="{{ $listing->id }}">{{ $listing->app->name }} · {{ $listing->platform->label() }}</option>
+                        @endforeach
+                    </select>
+                    <x-input-error :messages="$errors->get('newStoreListingId')" class="mt-1" />
+                </div>
+            </div>
+
+            @if ($newProvider !== '' && count($providers[$newProvider]['credential_fields'] ?? []) > 0)
+                <div class="mt-4">
+                    <h3 class="text-xs font-medium uppercase tracking-wide text-gray-500">
+                        Credentials <span class="normal-case text-gray-400">(write-only; stored encrypted)</span>
+                    </h3>
+                    <div class="mt-2 grid gap-4 md:grid-cols-2">
+                        @foreach ($providers[$newProvider]['credential_fields'] as $field => $label)
+                            <div>
+                                <label class="text-xs text-gray-500">{{ $label }}</label>
+                                <input type="password" autocomplete="new-password"
+                                       wire:model="newCredentials.{{ $field }}"
+                                       placeholder="value or env:KEY_NAME"
+                                       class="mt-1 w-full rounded-lg border-gray-300 text-sm shadow-sm">
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
+            <div class="mt-4">
+                <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-500">
+                    Create integration
+                </button>
+            </div>
+        </form>
+    @endif
 
     <div class="overflow-x-auto rounded-xl border border-gray-200 bg-white shadow-sm">
         <table class="min-w-full divide-y divide-gray-200 text-sm">
