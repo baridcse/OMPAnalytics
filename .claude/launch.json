@@ -1,0 +1,11 @@
+{
+    "version": "0.0.1",
+    "configurations": [
+        {
+            "name": "omp-analytics",
+            "runtimeExecutable": "php",
+            "runtimeArgs": ["laravel-app/artisan", "serve", "--port=8321"],
+            "port": 8321
+        }
+    ]
+}
